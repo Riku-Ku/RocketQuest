@@ -16,6 +16,7 @@ namespace RocketQuest
         {
             InitializeComponent();
         }
+        //Reject humanity, return to monkey
         //hi
     }
 }
