@@ -1,7 +1,7 @@
 ﻿
 namespace RocketQuest
 {
-    partial class Form1
+    partial class MainWindow
     {
         /// <summary>
         ///  Required designer variable.
@@ -29,13 +29,37 @@ namespace RocketQuest
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.exitBtn = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // exitBtn
+            // 
+            this.exitBtn.Location = new System.Drawing.Point(605, 12);
+            this.exitBtn.Name = "exitBtn";
+            this.exitBtn.Size = new System.Drawing.Size(75, 23);
+            this.exitBtn.TabIndex = 0;
+            this.exitBtn.Text = "Χ";
+            this.exitBtn.UseVisualStyleBackColor = true;
+            this.exitBtn.Click += new System.EventHandler(this.exitBtn_Click);
+            // 
+            // MainWindow
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            this.ClientSize = new System.Drawing.Size(692, 459);
+            this.Controls.Add(this.exitBtn);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Name = "MainWindow";
+            this.Text = "Title";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Load += new System.EventHandler(this.MainWindow_Load);
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.Button exitBtn;
     }
 }
 
