@@ -16,6 +16,8 @@ namespace RocketQuest
         {
             InitializeComponent();
         }
+
+        //это игра про космос
         //Reject humanity, return to monkey
         //hi
         //rocket
