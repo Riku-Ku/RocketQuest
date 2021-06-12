@@ -77,5 +77,6 @@ namespace RocketQuest
         {
             e.Graphics.FillRectangle(Brushes.Blue, hitbox.SetPoint.X, hitbox.SetPoint.Y, hitbox.SetWidth, hitbox.SetHeight);
         }
+        //comment
     }
 }
