@@ -83,5 +83,6 @@ namespace RocketQuest
             e.Graphics.FillRectangle(Brushes.Blue, hitbox.X, hitbox.Y, hitbox.Width, hitbox.Height);
             e.Graphics.ResetTransform();
         }
+        //comment
     }
 }
