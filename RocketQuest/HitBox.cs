@@ -8,10 +8,8 @@ namespace RocketQuest
 {
     class HitBox
     {
-        private Point coordinates=new Point(0,0);
-        private int width;
-        private int height;
-        public int SetWidth
+        private int width, height, x, y, screenWidth, screenHeight;
+        public int Width
         { 
             get => width; 
             set 
@@ -20,7 +18,7 @@ namespace RocketQuest
                     width = value;
             } 
         }
-        public int SetHeight
+        public int Height
         {
             get => height;
             set
@@ -29,12 +27,37 @@ namespace RocketQuest
                     height = value;
             }
         }
-        public Point SetPoint
+        public int X
         {
-            get => coordinates;
+            get => x;
             set
             {
-                coordinates = value;
+                if (value <= screenWidth - width && value >= 0 )
+                    x = value;
+            }
+        }
+        public int Y
+        {
+            get => y;
+            set
+            {
+                if (value <= screenHeight - height && value >= 0)
+                    y = value;
+            }
+        }
+
+        public int ScreenWidth
+        {
+            set
+            {
+                screenWidth = value;
+            }
+        }
+        public int ScreenHeight
+        {
+            set
+            {
+                screenHeight = value;
             }
         }
     }
