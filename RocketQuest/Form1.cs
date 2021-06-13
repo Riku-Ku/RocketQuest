@@ -18,17 +18,20 @@ namespace RocketQuest
         public MainWindow()
         {
             InitializeComponent();
+            DoubleBuffered = true;
 
-            hitbox.SetWidth = 400;
-            hitbox.SetHeight = 300;
-            hitbox.SetPoint = new Point(20, 30);
+            hitbox.Width = 100;
+            hitbox.Height = 100;
+            hitbox.X = 10;
+            hitbox.Y = 10;
 
             timerAction.Enabled = true;//Конфиги таймера
-            timerAction.Interval = 50;
+            timerAction.Interval = 10;
             timerAction.Tick += new EventHandler(timerAction_Tick);//"Событие тика"
             timerAction.Start();
 
-            this.KeyDown += new KeyEventHandler(Keys_Down); 
+            this.KeyDown += new KeyEventHandler(Keys_Down);
+
         }
 
         private void Keys_Down(object sender, KeyEventArgs e)
@@ -36,16 +39,16 @@ namespace RocketQuest
             switch (e.KeyCode)
             {
                 case Keys.Down:
-                    hitbox.SetPoint = new Point(hitbox.SetPoint.X, hitbox.SetPoint.Y + 5);
+                    hitbox.Y += 10;
                     break;
                 case Keys.Left:
-                    hitbox.SetPoint = new Point(hitbox.SetPoint.X - 5, hitbox.SetPoint.Y);
+                    hitbox.X -= 10;
                     break;
                 case Keys.Right:
-                    hitbox.SetPoint = new Point(hitbox.SetPoint.X + 5, hitbox.SetPoint.Y);
+                    hitbox.X += 10;
                     break;
                 case Keys.Up:
-                    hitbox.SetPoint = new Point(hitbox.SetPoint.X, hitbox.SetPoint.Y - 5);
+                    hitbox.Y -= 10;
                     break;
                 case Keys.Escape:
                     this.Close();
@@ -55,7 +58,8 @@ namespace RocketQuest
 
         private void MainWindow_Load(object sender, EventArgs e)
         {
-
+            hitbox.ScreenHeight = this.Size.Height;
+            hitbox.ScreenWidth = this.Size.Width;
         }
 
         private void timerAction_Tick(object sender, EventArgs e)
@@ -75,7 +79,9 @@ namespace RocketQuest
 
         private void MainWindow_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.FillRectangle(Brushes.Blue, hitbox.SetPoint.X, hitbox.SetPoint.Y, hitbox.SetWidth, hitbox.SetHeight);
+
+            e.Graphics.FillRectangle(Brushes.Blue, hitbox.X, hitbox.Y, hitbox.Width, hitbox.Height);
+            e.Graphics.ResetTransform();
         }
     }
 }
