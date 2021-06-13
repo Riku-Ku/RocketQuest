@@ -12,58 +12,85 @@ namespace RocketQuest
 {
     public partial class MainWindow : Form
     {
-        HitBox hitbox = new HitBox(); 
+        HitBox hitboxRocket = new HitBox();
+        HitBox hitboxMeteor = new HitBox();
+        
+
+        
         Timer timerAction = new Timer();//Таймер на обновление
+        Timer timerMeteorMover = new Timer();//Таймер на движение метеора
+        int rocketSpeed = 20, meteorSpeed = 5;//Скорость ракеты
+        bool isWdown, isAdown, isSdown, isDdown;
 
         public MainWindow()
         {
             InitializeComponent();
             DoubleBuffered = true;
 
-            hitbox.Width = 100;
-            hitbox.Height = 100;
-            hitbox.X = 10;
-            hitbox.Y = 10;
+            hitboxRocket.Width = 100;
+            hitboxRocket.Height = 60;
+            
+
+            hitboxMeteor.Height = 30;
+            hitboxMeteor.Width = 30;
+            
 
             timerAction.Enabled = true;//Конфиги таймера
-            timerAction.Interval = 10;
+            timerAction.Interval = 100;
             timerAction.Tick += new EventHandler(timerAction_Tick);//"Событие тика"
             timerAction.Start();
 
-            this.KeyDown += new KeyEventHandler(Keys_Down);
+            timerMeteorMover.Enabled = true;//Конфиги таймера
+            timerMeteorMover.Interval = 500;
+            timerMeteorMover.Tick += new EventHandler(timerMeteorMover_Tick);//"Событие тика"
+            timerMeteorMover.Start();
 
+            this.KeyDown += new KeyEventHandler(Keys_Down);
         }
 
         private void Keys_Down(object sender, KeyEventArgs e)
         {
-            switch (e.KeyCode)
-            {
-                case Keys.Down:
-                    hitbox.Y += 10;
-                    break;
-                case Keys.Left:
-                    hitbox.X -= 10;
-                    break;
-                case Keys.Right:
-                    hitbox.X += 10;
-                    break;
-                case Keys.Up:
-                    hitbox.Y -= 10;
-                    break;
-                case Keys.Escape:
-                    this.Close();
-                    break;
-            }
+            if (e.KeyCode == Keys.W) isWdown = true;
+            if (e.KeyCode == Keys.A) isAdown = true;
+            if (e.KeyCode == Keys.S) isSdown = true;
+            if (e.KeyCode == Keys.D) isDdown = true;
+        }
+        private void MainWindow_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.W) isWdown = false;
+            if (e.KeyCode == Keys.A) isAdown = false;
+            if (e.KeyCode == Keys.S) isSdown = false;
+            if (e.KeyCode == Keys.D) isDdown = false;
         }
 
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            hitbox.ScreenHeight = this.Size.Height;
-            hitbox.ScreenWidth = this.Size.Width;
+            hitboxMeteor.ScreenHeight = this.Size.Height;
+            hitboxMeteor.ScreenWidth = this.Size.Width;
+
+            hitboxRocket.ScreenHeight = this.Size.Height;
+            hitboxRocket.ScreenWidth = this.Size.Width;
+
+            hitboxRocket.X = 100;
+            hitboxRocket.Y = 100;
+
+            hitboxMeteor.X = this.Size.Width - hitboxMeteor.Width;
+            hitboxMeteor.Y = this.Size.Height /2;
         }
 
-        private void timerAction_Tick(object sender, EventArgs e)
+        private void timerMeteorMover_Tick(object sender, EventArgs e)
         {
+            hitboxMeteor.X -= meteorSpeed;
+        }
+
+            private void timerAction_Tick(object sender, EventArgs e)
+        {
+            if (isWdown) hitboxRocket.Y -= rocketSpeed;
+            if (isSdown) hitboxRocket.Y += rocketSpeed;
+            if (isAdown) hitboxRocket.X -= rocketSpeed;
+            if (isDdown) hitboxRocket.X += rocketSpeed;
+
+             
             Invalidate();
         }
 
@@ -79,10 +106,16 @@ namespace RocketQuest
 
         private void MainWindow_Paint(object sender, PaintEventArgs e)
         {
-
-            e.Graphics.FillRectangle(Brushes.Blue, hitbox.X, hitbox.Y, hitbox.Width, hitbox.Height);
+            e.Graphics.FillRectangle(Brushes.Blue, hitboxRocket.X, hitboxRocket.Y, hitboxRocket.Width, hitboxRocket.Height);
+            e.Graphics.FillRectangle(Brushes.Red, hitboxMeteor.X, hitboxMeteor.Y, hitboxMeteor.Width, hitboxMeteor.Height);
             e.Graphics.ResetTransform();
         }
-        //comment
+
+        private void MeteorSpawn(PaintEventArgs e)
+        {
+            
+            
+        }
+
     }
 }
