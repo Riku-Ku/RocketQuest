@@ -19,7 +19,7 @@ namespace RocketQuest
         Timer timerDelayBeforeMeteor = new Timer();//Таймер на задержку перед первым появлвением метеоров
 
 
-        int rocketSpeed = 15, meteorSpeed = 25;//Скорость ракеты
+        int rocketSpeed = 15, meteorSpeed = 25, score = 0;//Скорость ракеты
         static int meteorCount = 10;//Кол-во метеоритов
         bool isWdown, isAdown, isSdown, isDdown, delayEnd;
         Random randGenerator = new Random();
@@ -30,9 +30,10 @@ namespace RocketQuest
         public MainWindow()
         {
             InitializeComponent();
-            //this.BackgroundImage = RocketQuest.Properties.Resources.backGRND;
-
             
+            //this.BackgroundImage = RocketQuest.Properties.Resources.backGRND;
+            this.BackColor = Color.Black;
+            Cursor.Hide();
                 for (int i = 0; i < meteors.Length; i++)//добавление метеоритов в
                 {
                     int temp = randGenerator.Next(20, 100);
@@ -48,7 +49,7 @@ namespace RocketQuest
 
 
             timerDelayBeforeMeteor.Enabled = true;//Конфиги таймера
-            timerDelayBeforeMeteor.Interval = 4500;
+            timerDelayBeforeMeteor.Interval = 5000;
             timerDelayBeforeMeteor.Tick += new EventHandler(timerDelay_Tick);//"Событие тика"
             timerDelayBeforeMeteor.Start();
         }
@@ -56,6 +57,8 @@ namespace RocketQuest
         private void timerDelay_Tick(object sender, EventArgs e)
         {
             meteorSpeed += 2;
+            score+=5;
+            label1.Text = Convert.ToString(score);
         }
 
         private void timerAction_Tick(object sender, EventArgs e)
@@ -73,6 +76,7 @@ namespace RocketQuest
 
         private void MainWindow_Load(object sender, EventArgs e)
         {
+            //label1.Location.X = Screen.FromControl(this).Bounds.Width - 20; /*new Point((Screen.FromControl(this).Bounds.Width - 20, Screen.FromControl(this).Bounds.Height));*/
             player.SetBorders(this.Width, this.Height);
         }
 
