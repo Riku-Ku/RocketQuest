@@ -15,34 +15,35 @@ namespace RocketQuest
     public partial class MainWindow : Form
     {
         Timer timerAction = new Timer();//Таймер на обновление
-        Timer timerMeteorMover = new Timer();//Таймер на движение метеора
         Timer timerDelayBeforeMeteor = new Timer();//Таймер на задержку перед первым появлвением метеоров
 
-
-        int rocketSpeed = 15, meteorSpeed = 25;//Скорость ракеты
+        int rocketSpeed = 15, meteorSpeed = 10, score;//Скорость ракеты
         static int meteorCount = 10;//Кол-во метеоритов
-        bool isWdown, isAdown, isSdown, isDdown, delayEnd;
+        bool isWdown, isAdown, isSdown, isDdown;
         Random randGenerator = new Random();
 
         Rocket player = new Rocket(100, 70, 0, 0, RocketQuest.Properties.Resources.Player);
         Meteor[] meteors = new Meteor[meteorCount];//масив метеоритов
 
+
         public MainWindow()
         {
             InitializeComponent();
-            //this.BackgroundImage = RocketQuest.Properties.Resources.backGRND;
+
+            
+            this.BackgroundImage = RocketQuest.Properties.Resources.backGRND;
 
 
             for (int i = 0; i < meteors.Length; i++)//добавление метеоритов в
             {
                 int temp = randGenerator.Next(20, 100);
-                meteors[i] = new Meteor(temp, temp, randGenerator.Next(Screen.FromControl(this).Bounds.Width), randGenerator.Next(Screen.FromControl(this).Bounds.Height), RandomMeteorSkin());
+                meteors[i] = new Meteor(temp, temp, Screen.FromControl(this).Bounds.Width + randGenerator.Next(Screen.FromControl(this).Bounds.Width), randGenerator.Next(Screen.FromControl(this).Bounds.Height), RandomMeteorSkin());
             }
 
 
 
             timerAction.Enabled = true;//Конфиги таймера
-            timerAction.Interval = 25;
+            timerAction.Interval = 20;
             timerAction.Tick += new EventHandler(timerAction_Tick);//"Событие тика"
             timerAction.Start();
 
@@ -62,10 +63,14 @@ namespace RocketQuest
         {
             OnPlayerMove();
 
+            score++;
+            scoreDisplay.Text = score.ToString();
+
 
             foreach (Meteor meteor in meteors)
             {
                 meteor.X -= meteorSpeed;
+                //meteor.Y += randGenerator.Next(-30, 0);
             }
 
             this.Invalidate();
@@ -74,10 +79,16 @@ namespace RocketQuest
         private void MainWindow_Load(object sender, EventArgs e)
         {
             player.SetBorders(this.Width, this.Height);
+            scoreDisplay.ForeColor = Color.White;
+            scoreDisplay.TextAlign = ContentAlignment.MiddleRight;
+            scoreDisplay.BackColor = Color.Transparent;
+            scoreDisplay.Font = new Font("Arial", 18, FontStyle.Bold);
         }
 
         private void MainWindow_Paint(object sender, PaintEventArgs e)
         {
+            scoreDisplay.Location = new Point(Screen.FromControl(this).Bounds.Width - scoreDisplay.Size.Width - 5, 15);
+
             e.Graphics.DrawImage(player.RocketSkin, player.X, player.Y, player.Width, player.Height);
 
             foreach (Meteor meteor in meteors)
@@ -94,7 +105,6 @@ namespace RocketQuest
                 else
                     e.Graphics.DrawImage(meteor.MeteorSkin, meteor.X, meteor.Y, meteor.Width, meteor.Height);
             }
-
         }
 
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)

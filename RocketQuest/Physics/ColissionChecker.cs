@@ -9,8 +9,7 @@ namespace RocketQuest.Physics
     {
         public static bool OutFromScreen(Meteor SpaceObject, int screenWidth, int screenHeight)//Проверка на границы экрана
         {
-            if (((SpaceObject.X + SpaceObject.Width) < 0 || (SpaceObject.Y + SpaceObject.Height) < 0) ||
-                ((SpaceObject.X > screenWidth || SpaceObject.Y > screenHeight)))
+            if (((SpaceObject.X + SpaceObject.Width) < 0 ))
                 return true;
 
             return false;
