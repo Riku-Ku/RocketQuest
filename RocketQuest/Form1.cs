@@ -30,9 +30,9 @@ namespace RocketQuest
         {
             InitializeComponent();
 
-            
-            this.BackgroundImage = RocketQuest.Properties.Resources.backGRND;
 
+            //this.BackgroundImage = RocketQuest.Properties.Resources.backGRND;
+            this.BackColor = Color.Black;
 
             for (int i = 0; i < meteors.Length; i++)//добавление метеоритов в
             {
