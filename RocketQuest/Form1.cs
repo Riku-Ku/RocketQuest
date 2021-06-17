@@ -19,7 +19,7 @@ namespace RocketQuest
         Timer timerDelayBeforeMeteor = new Timer();//Таймер на задержку перед первым появлвением метеоров
 
 
-        int rocketSpeed = 15, meteorSpeed = 25, score = 0;//Скорость ракеты
+        int rocketSpeed = 30, meteorSpeed = 45, score = 0;//Скорость ракеты
         static int meteorCount = 10;//Кол-во метеоритов
         bool isWdown, isAdown, isSdown, isDdown, delayEnd;
         Random randGenerator = new Random();
@@ -30,7 +30,7 @@ namespace RocketQuest
         public MainWindow()
         {
             InitializeComponent();
-            
+
             //this.BackgroundImage = RocketQuest.Properties.Resources.backGRND;
             this.BackColor = Color.Black;
             Cursor.Hide();
