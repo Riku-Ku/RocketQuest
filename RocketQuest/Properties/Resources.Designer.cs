@@ -73,6 +73,16 @@ namespace RocketQuest.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap menuBackGr {
+            get {
+                object obj = ResourceManager.GetObject("menuBackGr", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap meteorBrown_big1 {
             get {
                 object obj = ResourceManager.GetObject("meteorBrown_big1", resourceCulture);
