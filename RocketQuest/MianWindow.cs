@@ -19,7 +19,7 @@ namespace RocketQuest
     {
         Timer timerAction = new Timer();//Таймер на обновление
         Timer timerDelayBeforeMeteor = new Timer();//Таймер на задержку перед первым появлвением метеоров
-        List<Tuple<string, int>> scoreHolder = new List<Tuple<string, int>>();//Данные по очкам
+        List<ValueTuple<string, int>> scoreHolder = new List<ValueTuple<string, int>>();//Данные по очкам
         string scorePath = Path.Combine(Environment.CurrentDirectory, "scores.txt");//файлы по очкам
 
         //PanelMenuMain panelM = new PanelMenuMain();//Задник меню
@@ -262,7 +262,7 @@ namespace RocketQuest
 
                     while ((temp = sr.ReadLine()) != null)
                     {
-                        scoreHolder.Add(new Tuple<string, int>(Convert.ToString(firstItemRegex.Match(temp)).Substring(1),
+                        scoreHolder.Add(new ValueTuple<string, int>(Convert.ToString(firstItemRegex.Match(temp)).Substring(1),
                             Convert.ToInt32(Convert.ToString(secondItemRegex.Match(temp)).Substring(2))));
                     }
                 }
@@ -302,32 +302,35 @@ namespace RocketQuest
 
         private void AddPlayerScoreToList()
         {
-            
+
             //scoreHolder = scoreHolder.Where(s )
-
-            if(scoreHolder.Count > 0)
+            bool has = false;
+            if (scoreHolder.Count > 0)
             {
-
                 for (int i = 0; i < scoreHolder.Count; i++)
-                {
                     if (scoreHolder[i].Item1 == nickName.Text)
+                        has = true;
+                if (has == true)
+                    for (int i = 0; i < scoreHolder.Count; i++)
                     {
-                        if(scoreHolder[i].Item2 < score)
+                        if (scoreHolder[i].Item1 == nickName.Text)
                         {
-                            scoreHolder[i] = new Tuple<string, int>(nickName.Text, score);
-                            break;
+                            if (scoreHolder[i].Item2 < score)
+                            {
+                                scoreHolder[i] = new ValueTuple<string, int>(nickName.Text, score);
+                                break;
+                            }
+                            else
+                                break;
                         }
                     }
-                    else if(!(scoreHolder[i].Item1 == nickName.Text))
-                    {
-                        scoreHolder.Add(new Tuple<string, int>(nickName.Text, score));
-                        break;
-                    }
+                else
+                {
+                    scoreHolder.Add(new ValueTuple<string, int>(nickName.Text, score));
                 }
             }
             else
-                scoreHolder.Add(new Tuple<string, int>(nickName.Text, score));
-
+                scoreHolder.Add(new ValueTuple<string, int>(nickName.Text, score));
             scoreHolder = scoreHolder.OrderByDescending(s => s.Item2).ToList();
         }
     }

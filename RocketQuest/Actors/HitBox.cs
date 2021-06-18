@@ -8,7 +8,7 @@ namespace RocketQuest
 {
     class HitBox //Набор основных парраметров
     {
-        protected int width, height, x = 0, y = 0;
+        protected int width, height, x, y;
 
         public HitBox()
         {
@@ -24,16 +24,17 @@ namespace RocketQuest
                 x = positionX;
                 y = positionY;
             }
+            else
+                throw new ArgumentException("Width & Height always > 0");
         }
-
         public int Width
-        { 
-            get => width; 
-            set 
+        {
+            get => width;
+            set
             {
                 if (value >= 0)
                     width = value;
-            } 
+            }
         }
         public int Height
         {
@@ -47,16 +48,12 @@ namespace RocketQuest
         public int X
         {
             get => x;
+            set { x = value; }
         }
         public int Y
         {
             get => y;
-        }
-
-        public void Moving(int addValueX, int addValueY)//Перемещение
-        {
-            x += addValueX;
-            y += addValueY;
+            set { y = value; }
         }
     }
 }
