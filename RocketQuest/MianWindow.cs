@@ -23,12 +23,7 @@ namespace RocketQuest
         Timer timerAction = new Timer();//Таймер на обновление
         Timer timerDelayBeforeMeteor = new Timer();//Таймер на задержку перед первым появлвением метеоров
 
-        bool isWdown, isAdown, isSdown, isDdown;//Чек клавиш
-        
-        private void DrawingProcess()
-        {
-
-        }
+        public static bool isWdown, isAdown, isSdown, isDdown;//Чек клавиш
 
 
         public MainWindow()
@@ -49,17 +44,16 @@ namespace RocketQuest
 
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            //player.SetBorders(this.Width, this.Height);
+            MenuConfig(this);//Конфиги меню
+            scoreDisplay.Location = new Point(Screen.FromControl(this).Bounds.Width - scoreDisplay.Size.Width - 30, 15);
 
-            MenuConfig(this);
 
-            ScoreReader();
-            DisplayScoreInList();
+            World
         }
 
         private void MainWindow_Paint(object sender, PaintEventArgs e)
         {
-            scoreDisplay.Location = new Point(Screen.FromControl(this).Bounds.Width - scoreDisplay.Size.Width - 5, 15);
+            
 
             e.Graphics.DrawImage(player.RocketSkin, player.GetX, player.GetY, player.Width, player.Height);
 
@@ -74,8 +68,7 @@ namespace RocketQuest
 
                 if (ColissionChecker.MeteorOutCheck(meteor, this.Width, this.Height))
                 {
-                    meteor.Y = randGenerator.Next(this.Height);
-                    meteor.X = this.Width + randGenerator.Next(100);
+                    
                 }
                 else
                     e.Graphics.DrawImage(meteor.MeteorSkin, meteor.GetX, meteor.GetY, meteor.Width, meteor.Height);
@@ -96,14 +89,6 @@ namespace RocketQuest
             if (e.KeyCode == Keys.A) isAdown = false;
             if (e.KeyCode == Keys.S) isSdown = false;
             if (e.KeyCode == Keys.D) isDdown = false;
-        }
-
-        private void OnPlayerMove()
-        {
-            if (isWdown) ;
-            if (isAdown) ;
-            if (isSdown) ;
-            if (isDdown) ;
         }
 
         private void startBTN_Click_1(object sender, EventArgs e)

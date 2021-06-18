@@ -7,7 +7,7 @@ namespace RocketQuest.Physics
 {
     class ColissionChecker
     {
-        private int screenW = 0 , screenH = 0;
+        private static int screenW = 0 , screenH = 0;
 
         public static bool MeteorOutCheck(HitBox spaceObject)//Проверка на выход метеора за поле
         {
@@ -17,10 +17,10 @@ namespace RocketQuest.Physics
             return false;
         }
 
-        public bool CheckMoving(int valueAddToX, int valueAddToY, HitBox hitBox)//Возможность перемещения
+        public static bool CheckPlayerMoving(HitBox hitBox)//Возможность перемещения
         {
-            if ((valueAddToX + hitBox.GetX <= screenW - hitBox.Width && valueAddToX + hitBox.GetX >= 0) ||
-                (valueAddToY + hitBox.GetY <= screenH - hitBox.Height && valueAddToY + hitBox.GetY >= 0))
+            if ((hitBox.GetX <= screenW - hitBox.Width && hitBox.GetX >= 0) ||
+                (hitBox.GetY <= screenH - hitBox.Height && hitBox.GetY >= 0))
                 return true;
 
             return false;

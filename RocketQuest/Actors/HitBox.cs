@@ -56,6 +56,12 @@ namespace RocketQuest
             get => y;
         }
 
+        public void SetLocation(int valueX, int valueY)//Задать координаты
+        {
+            x = valueX;
+            y = valueY;
+        }
+
         public void Move()//Перемещение
         {
             x += speedX;
