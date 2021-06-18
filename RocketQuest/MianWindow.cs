@@ -13,68 +13,43 @@ using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
 
+//старый код this.BackgroundImage = RocketQuest.Properties.Resources.backGRND;
+
+
 namespace RocketQuest
 {
     public partial class MainWindow : Form
     {
         Timer timerAction = new Timer();//Таймер на обновление
         Timer timerDelayBeforeMeteor = new Timer();//Таймер на задержку перед первым появлвением метеоров
-        List<Tuple<string, int>> scoreHolder = new List<Tuple<string, int>>();//Данные по очкам
-        string scorePath = Path.Combine(Environment.CurrentDirectory, "scores.txt");//файлы по очкам
 
-        //PanelMenuMain panelM = new PanelMenuMain();//Задник меню
+        bool isWdown, isAdown, isSdown, isDdown;//Чек клавиш
+        
+        private void DrawingProcess()
+        {
 
-        int rocketSpeed = 25, meteorSpeed = 20, score;//Скорость ракеты
-        static int meteorCount = 10;//Кол-во метеоритов
-        bool isWdown, isAdown, isSdown, isDdown;
-        Random randGenerator = new Random();
-
-        Rocket player = new Rocket(100, 70, 0, 0, RocketQuest.Properties.Resources.Player);
-        Meteor[] meteors = new Meteor[meteorCount];//масив метеоритов
+        }
 
 
         public MainWindow()
         {
             InitializeComponent();
 
-            this.BackgroundImage = RocketQuest.Properties.Resources.backGRND;
-
-            //Конфиги таймера
             timerAction.Interval = 20;
             timerAction.Tick += new EventHandler(timerAction_Tick);//"Тик главного таймера"
-            //
 
-
-            //Конфиги таймера сложности
             timerDelayBeforeMeteor.Interval = 4500;
-            timerDelayBeforeMeteor.Tick += new EventHandler(timerDelay_Tick);
-            //
-        }
-
-        private void timerDelay_Tick(object sender, EventArgs e)//"Событие тика таймера сложности"
-        {
-            meteorSpeed += 2;
+            timerDelayBeforeMeteor.Tick += new EventHandler(timerDelay_Tick);//Дописать событие тика!!!!!!!!!!!(ускорение метеоров)
         }
 
         private void timerAction_Tick(object sender, EventArgs e)//"Событие тика главного таймера"
         {
-            OnPlayerMove();
-
-            score++;
-            scoreDisplay.Text = score.ToString();
-
-
-            foreach (Meteor meteor in meteors)
-            {
-                meteor.X -= meteorSpeed;
-            }
-
             this.Invalidate();
         }
 
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            player.SetBorders(this.Width, this.Height);
+            //player.SetBorders(this.Width, this.Height);
 
             MenuConfig(this);
 
@@ -86,7 +61,7 @@ namespace RocketQuest
         {
             scoreDisplay.Location = new Point(Screen.FromControl(this).Bounds.Width - scoreDisplay.Size.Width - 5, 15);
 
-            e.Graphics.DrawImage(player.RocketSkin, player.X, player.Y, player.Width, player.Height);
+            e.Graphics.DrawImage(player.RocketSkin, player.GetX, player.GetY, player.Width, player.Height);
 
             foreach (Meteor meteor in meteors)
             {
@@ -97,13 +72,13 @@ namespace RocketQuest
                     menuPanel.Show();
                 }
 
-                if (ColissionChecker.OutFromScreen(meteor, this.Width, this.Height))
+                if (ColissionChecker.MeteorOutCheck(meteor, this.Width, this.Height))
                 {
                     meteor.Y = randGenerator.Next(this.Height);
                     meteor.X = this.Width + randGenerator.Next(100);
                 }
                 else
-                    e.Graphics.DrawImage(meteor.MeteorSkin, meteor.X, meteor.Y, meteor.Width, meteor.Height);
+                    e.Graphics.DrawImage(meteor.MeteorSkin, meteor.GetX, meteor.GetY, meteor.Width, meteor.Height);
             }
         }
 
@@ -125,25 +100,10 @@ namespace RocketQuest
 
         private void OnPlayerMove()
         {
-            if (isWdown) player.Moving(0, -rocketSpeed);
-            if (isAdown) player.Moving(-rocketSpeed, 0);
-            if (isSdown) player.Moving(0, rocketSpeed);
-            if (isDdown) player.Moving(rocketSpeed, 0);
-        }
-
-        private Bitmap RandomMeteorSkin()
-        {
-            switch (randGenerator.Next(4))
-            {
-                case (0):
-                    return RocketQuest.Properties.Resources.meteor1;
-                case (1):
-                    return RocketQuest.Properties.Resources.meteorBrown_big3;
-                case (2):
-                    return RocketQuest.Properties.Resources.meteorGrey_big1;
-                default:
-                    return RocketQuest.Properties.Resources.meteorGrey_big2;
-            }
+            if (isWdown) ;
+            if (isAdown) ;
+            if (isSdown) ;
+            if (isDdown) ;
         }
 
         private void startBTN_Click_1(object sender, EventArgs e)
@@ -161,8 +121,6 @@ namespace RocketQuest
             timerAction.Start();
             timerDelayBeforeMeteor.Enabled = true;
             timerDelayBeforeMeteor.Start();
-
-            meteorSpeed = 20;
 
             score = 0;
             scoreDisplay.Show();

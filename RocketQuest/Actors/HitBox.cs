@@ -8,21 +8,23 @@ namespace RocketQuest
 {
     class HitBox //Набор основных парраметров
     {
-        protected int width, height, x = 0, y = 0;
+        protected int width, height, x = 0, y = 0, speedX = 0, speedY = 0;
 
         public HitBox()
         {
 
         }
 
-        public HitBox(int valueWidth, int valueHeight, int positionX, int positionY)//конструктор по умолчанию
+        public HitBox(int valueX, int valueY, int valueWidth, int valueHeight, int speedValueX, int speedValueY)//конструктор по умолчанию
         {
             if (valueHeight > 0 & valueWidth > 0)
             {
                 width = valueWidth;
                 height = valueHeight;
-                x = positionX;
-                y = positionY;
+                x = valueX;
+                y = valueY;
+                speedX = speedValueX;
+                speedY = speedValueY;
             }
         }
 
@@ -44,19 +46,44 @@ namespace RocketQuest
                     height = value;
             }
         }
-        public int X
+
+        public int GetX
         {
             get => x;
         }
-        public int Y
+        public int GetY
         {
             get => y;
         }
 
-        public void Moving(int addValueX, int addValueY)//Перемещение
+        public void Move()//Перемещение
         {
-            x += addValueX;
-            y += addValueY;
+            x += speedX;
+            y += speedY;
         }
+
+        public void SetSpeed(int speedValueX, int speedValueY)//Задать скорость
+        {
+            speedX = speedValueX;
+            speedY = speedValueY;
+        }
+
+        public int GetSpeedX
+        {
+            get => speedX;
+        }
+
+        public int GetSpeedY
+        {
+            get => speedY;
+        }
+
+        //public HitBox[] GetHitboxArray(int size, int speedValueX, int speedValueY)
+        //{
+        //    HitBox[] hitBoxes = new HitBox[size];
+
+
+        //    return hitBoxes;
+        //}
     }
 }
