@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace RocketQuest
 {
@@ -17,11 +19,12 @@ namespace RocketQuest
     {
         Timer timerAction = new Timer();//Таймер на обновление
         Timer timerDelayBeforeMeteor = new Timer();//Таймер на задержку перед первым появлвением метеоров
-        
-        
+        List<Tuple<string, int>> scoreHolder = new List<Tuple<string, int>>();//Данные по очкам
+        string scorePath = Path.Combine(Environment.CurrentDirectory, "scores.txt");//файлы по очкам
+
         //PanelMenuMain panelM = new PanelMenuMain();//Задник меню
 
-        int rocketSpeed = 15, meteorSpeed = 10, score;//Скорость ракеты
+        int rocketSpeed = 25, meteorSpeed = 20, score;//Скорость ракеты
         static int meteorCount = 10;//Кол-во метеоритов
         bool isWdown, isAdown, isSdown, isDdown;
         Random randGenerator = new Random();
@@ -74,6 +77,9 @@ namespace RocketQuest
             player.SetBorders(this.Width, this.Height);
 
             MenuConfig(this);
+
+            ScoreReader();
+            DisplayScoreInList();
         }
 
         private void MainWindow_Paint(object sender, PaintEventArgs e)
@@ -130,7 +136,7 @@ namespace RocketQuest
             switch (randGenerator.Next(4))
             {
                 case (0):
-                    return RocketQuest.Properties.Resources.meteorBrown_big1;
+                    return RocketQuest.Properties.Resources.meteor1;
                 case (1):
                     return RocketQuest.Properties.Resources.meteorBrown_big3;
                 case (2):
@@ -147,18 +153,6 @@ namespace RocketQuest
             
         }
 
-        private void SetEventsToBTN(Panel panelMenuBack)
-        {
-            //panelMenuBack. += new EventHandler(StartBTN_Click);
-        }
-
-        //private void StartBTN_Click(object sender, System.EventArgs e)
-        //{
-        //    GameStart();
-        //    scoreDisplay.Show();
-        //    MessageBox.Show("ЪьЪьЪ");
-        //}
-
         private void GameStart()
         {
             GameInitilize();
@@ -167,6 +161,8 @@ namespace RocketQuest
             timerAction.Start();
             timerDelayBeforeMeteor.Enabled = true;
             timerDelayBeforeMeteor.Start();
+
+            meteorSpeed = 20;
 
             score = 0;
             scoreDisplay.Show();
@@ -183,6 +179,10 @@ namespace RocketQuest
             scoreDisplay.Hide();
 
             stateLabel.Text = "Ваш счет: " + score;
+
+            AddPlayerScoreToList();
+            DisplayScoreInList();
+            ScoreWriter();
         }
 
         private void MenuConfig(Form formMain) //онфиги меню
@@ -231,16 +231,11 @@ namespace RocketQuest
             scoreList.Location = new Point((int)(menuPanel.Width * 0.5) + 20, startBTN.Location.Y + nickName.Height * 3);
             scoreList.Size = new Size((int)(menuPanel.Width * 0.2), exitBTN.Height * 2 + nickName.Height);
             scoreList.Font = new Font("Arial", 18);
-            scoreList.Items.Add("pepe");
-            scoreList.Items.Add("pepe");
-            scoreList.Items.Add("pepe");
-            scoreList.Items.Add("pepe");
-            scoreList.Items.Add("pepe");
-            scoreList.Items.Add("pepe");
-            scoreList.Items.Add("pepe");
-            scoreList.Items.Add("pepe");
-            scoreList.Items.Add("pepe");
+        }
 
+        private void exitBTN_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
 
         private void GameInitilize()//конфиги применяемые перед началом игры
@@ -253,6 +248,87 @@ namespace RocketQuest
                 int temp = randGenerator.Next(20, 100);
                 meteors[i] = new Meteor(temp, temp, Screen.FromControl(this).Bounds.Width + randGenerator.Next(Screen.FromControl(this).Bounds.Width), randGenerator.Next(Screen.FromControl(this).Bounds.Height), RandomMeteorSkin());
             }
+        }
+
+        private void ScoreReader()
+        {
+            if (File.Exists(scorePath))
+            {
+                using (var sr = new StreamReader(scorePath))//считывание из файла
+                {
+                    string temp = "";
+                    Regex firstItemRegex = new Regex(@"[(]\w+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    Regex secondItemRegex = new Regex(@"[,][ ]\w+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+                    while ((temp = sr.ReadLine()) != null)
+                    {
+                        scoreHolder.Add(new Tuple<string, int>(Convert.ToString(firstItemRegex.Match(temp)).Substring(1),
+                            Convert.ToInt32(Convert.ToString(secondItemRegex.Match(temp)).Substring(2))));
+                    }
+                }
+                scoreHolder = scoreHolder.OrderByDescending(s => s.Item2).ToList();
+            }
+            else
+            {
+                using (FileStream fs = File.Create(scorePath))//Создание файла
+                {
+                }
+            }
+        }
+
+        private void ScoreWriter()
+        {
+            using (StreamWriter outputFile = new StreamWriter(scorePath))//Запись в файл
+            {
+                string temp = default;
+                for (int i = 0; i < scoreHolder.Count; i++)
+                {
+                    temp += scoreHolder[i] + Environment.NewLine;
+                }
+                outputFile.Write("");
+                outputFile.Write(temp);
+            }
+        }
+
+        private void DisplayScoreInList()//Запись в лист в меню
+        {
+            scoreList.Items.Clear();
+
+            for (int i = 0; i < scoreHolder.Count; i++)
+            {
+                scoreList.Items.Add(scoreHolder[i]);
+            }
+        }
+
+        private void AddPlayerScoreToList()
+        {
+            
+            //scoreHolder = scoreHolder.Where(s )
+
+            if(scoreHolder.Count > 0)
+            {
+
+                for (int i = 0; i < scoreHolder.Count; i++)
+                {
+                    if (scoreHolder[i].Item1 == nickName.Text)
+                    {
+                        if(scoreHolder[i].Item2 < score)
+                        {
+                            scoreHolder[i] = new Tuple<string, int>(nickName.Text, score);
+                            break;
+                        }
+                    }
+                    else if(!(scoreHolder[i].Item1 == nickName.Text))
+                    {
+                        scoreHolder.Add(new Tuple<string, int>(nickName.Text, score));
+                        break;
+                    }
+                }
+            }
+            else
+                scoreHolder.Add(new Tuple<string, int>(nickName.Text, score));
+
+            scoreHolder = scoreHolder.OrderByDescending(s => s.Item2).ToList();
         }
     }
 }

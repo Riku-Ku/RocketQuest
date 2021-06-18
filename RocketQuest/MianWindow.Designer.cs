@@ -85,6 +85,7 @@ namespace RocketQuest
             this.exitBTN.TabIndex = 2;
             this.exitBTN.Text = "button2";
             this.exitBTN.UseVisualStyleBackColor = true;
+            this.exitBTN.Click += new System.EventHandler(this.exitBTN_Click);
             // 
             // scoreList
             // 
