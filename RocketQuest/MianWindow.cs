@@ -19,10 +19,8 @@ namespace RocketQuest
     {
         Timer timerAction = new Timer();//Таймер на обновление
         Timer timerDelayBeforeMeteor = new Timer();//Таймер на задержку перед первым появлвением метеоров
-        List<ValueTuple<string, int>> scoreHolder = new List<ValueTuple<string, int>>();//Данные по очкам
+        List<ScoreLine> scoreData = new List<ScoreLine>();//Данные по очкам
         string scorePath = Path.Combine(Environment.CurrentDirectory, "scores.txt");//файлы по очкам
-
-        //PanelMenuMain panelM = new PanelMenuMain();//Задник меню
 
         int rocketSpeed = 25, meteorSpeed = 20, score;//Скорость ракеты
         static int meteorCount = 10;//Кол-во метеоритов
@@ -79,7 +77,7 @@ namespace RocketQuest
             MenuConfig(this);
 
             ScoreReader();
-            DisplayScoreInList();
+            GetStringScoreData();
         }
 
         private void MainWindow_Paint(object sender, PaintEventArgs e)
@@ -148,8 +146,19 @@ namespace RocketQuest
 
         private void startBTN_Click_1(object sender, EventArgs e)
         {
-            GameStart();
-            menuPanel.Hide();
+            if (CheckInputText(nickName.Text))//проверка на ник
+            {
+                GameStart();
+                menuPanel.Hide();
+                this.Focus();
+            }
+            else
+            {
+                MessageBox.Show("Ваш ник содержит недопустимые символы", "Ошибка", MessageBoxButtons.OK);
+                nickName.Text = "";
+                nickName.Focus();
+            }
+
             
         }
 
@@ -181,14 +190,13 @@ namespace RocketQuest
             stateLabel.Text = "Ваш счет: " + score;
 
             AddPlayerScoreToList();
-            DisplayScoreInList();
+            GetStringScoreData();
             ScoreWriter();
         }
 
         private void MenuConfig(Form formMain) //онфиги меню
         {
             scoreDisplay.ForeColor = Color.White;
-            //scoreDisplay.TextAlign = ContentAlignment.MiddleRight;
             scoreDisplay.BackColor = Color.Transparent;
             scoreDisplay.Font = new Font("Arial", 18, FontStyle.Bold);
             scoreDisplay.Hide();
@@ -218,7 +226,6 @@ namespace RocketQuest
             nickName.Font = new Font("Arial", 18, FontStyle.Bold);
             nickName.PlaceholderText = "ВВЕДИТЕ НИК";
             nickName.Location = new Point((int)(menuPanel.Width * 0.5) - nickName.Width - 20, startBTN.Location.Y + nickName.Height * 3);
-            //nickName.BackColor = Color.FromArgb(178, 115, 72, 171);
 
             exitBTN.Size = new Size((int)(menuPanel.Width * 0.2), 60);
             exitBTN.Font = new Font("Arial", 20, FontStyle.Bold);
@@ -256,23 +263,22 @@ namespace RocketQuest
             {
                 using (var sr = new StreamReader(scorePath))//считывание из файла
                 {
-                    string temp = "";
-                    Regex firstItemRegex = new Regex(@"[(]\w+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                    Regex secondItemRegex = new Regex(@"[,][ ]\w+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    string temp = default;
+
+                    Regex firstItemRegex = new Regex(@"^\w+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    Regex secondItemRegex = new Regex(@"\w+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
                     while ((temp = sr.ReadLine()) != null)
                     {
-                        scoreHolder.Add(new ValueTuple<string, int>(Convert.ToString(firstItemRegex.Match(temp)).Substring(1),
-                            Convert.ToInt32(Convert.ToString(secondItemRegex.Match(temp)).Substring(2))));
+                        scoreData.Add(new ScoreLine(Convert.ToString(firstItemRegex.Match(temp)),
+                            Convert.ToInt32(Convert.ToString(secondItemRegex.Match(temp)))));
                     }
                 }
-                scoreHolder = scoreHolder.OrderByDescending(s => s.Item2).ToList();
+                scoreData = scoreData.OrderByDescending(s => s.ScoreValue).ToList();//сорторовка
             }
             else
             {
-                using (FileStream fs = File.Create(scorePath))//Создание файла
-                {
-                }
+                using (FileStream fs = File.Create(scorePath)) ;//Создание файла
             }
         }
 
@@ -281,57 +287,77 @@ namespace RocketQuest
             using (StreamWriter outputFile = new StreamWriter(scorePath))//Запись в файл
             {
                 string temp = default;
-                for (int i = 0; i < scoreHolder.Count; i++)
+
+                for (int i = 0; i < scoreData.Count; i++)
                 {
-                    temp += scoreHolder[i] + Environment.NewLine;
+                    temp += scoreData[i].NikName + "-" + scoreData[i].ScoreValue + Environment.NewLine;
                 }
+
                 outputFile.Write("");
                 outputFile.Write(temp);
             }
         }
 
-        private void DisplayScoreInList()//Запись в лист в меню
+        public void GetStringScoreData()//получиьт данные
         {
-            scoreList.Items.Clear();
-
-            for (int i = 0; i < scoreHolder.Count; i++)
+            List<string> tempScoreList = new List<string>();
+            foreach (ScoreLine line in scoreData)
             {
-                scoreList.Items.Add(scoreHolder[i]);
+                tempScoreList.Add(line.NikName + " - " + line.ScoreValue);
             }
+            scoreList.DataSource = tempScoreList;
         }
 
-        private void AddPlayerScoreToList()
+        private void AddPlayerScoreToList()//сохранение результатов
         {
 
-            //scoreHolder = scoreHolder.Where(s )
             bool has = false;
-            if (scoreHolder.Count > 0)
+
+
+
+            if (scoreData.Count > 0)
             {
-                for (int i = 0; i < scoreHolder.Count; i++)
-                    if (scoreHolder[i].Item1 == nickName.Text)
+
+
+                for (int i = 0; i < scoreData.Count; i++)//Чек на присутствие
+                    if (scoreData[i].NikName == nickName.Text)
                         has = true;
-                if (has == true)
-                    for (int i = 0; i < scoreHolder.Count; i++)
+
+                if (has)
+                {
+                    for (int i = 0; i < scoreData.Count; i++)
                     {
-                        if (scoreHolder[i].Item1 == nickName.Text)
+                        if (scoreData[i].NikName == nickName.Text)
                         {
-                            if (scoreHolder[i].Item2 < score)
+                            if (scoreData[i].ScoreValue < score)
                             {
-                                scoreHolder[i] = new ValueTuple<string, int>(nickName.Text, score);
+                                scoreData[i].ScoreValue = score;
                                 break;
                             }
                             else
                                 break;
                         }
                     }
-                else
-                {
-                    scoreHolder.Add(new ValueTuple<string, int>(nickName.Text, score));
                 }
+                else
+                    scoreData.Add(new ScoreLine(nickName.Text, score));
             }
             else
-                scoreHolder.Add(new ValueTuple<string, int>(nickName.Text, score));
-            scoreHolder = scoreHolder.OrderByDescending(s => s.Item2).ToList();
+                scoreData.Add(new ScoreLine(nickName.Text, score));
+
+            scoreData = scoreData.OrderByDescending(s => s.ScoreValue).ToList();//сорторовка
+        }
+
+        private bool CheckInputText(string data)
+        {
+            Regex itemRegex = new Regex(@"\W", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+            if (itemRegex.IsMatch(data) || data.Length == 0 || data.Length > 16)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

@@ -21,10 +21,6 @@ namespace RocketQuest.Physics
             int LeftDownMeteorY = meteor.Y + meteor.Height;
             int LeftDownRocketY = rocket.Y + rocket.Height;
 
-
-            //int rightUpRocket = rocket.X + rocket.Width;
-            //int rightDownRocket = rightUpRocket+ rocket.Width;
-            //int leftDownRocket = rocket.X + rocket.Height;
             if (meteor.X >= rocket.X && meteor.X <= rocket.X + rocket.Width && meteor.Y >= rocket.Y && meteor.Y <= rocket.Y + rocket.Height)
                 return true;
             if (meteor.X >= rocket.X && meteor.X <= rocket.X + rocket.Width && LeftDownMeteorY >= rocket.Y && LeftDownMeteorY <= rocket.Y + rocket.Height)
