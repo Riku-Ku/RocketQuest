@@ -32,7 +32,7 @@ namespace RocketQuest
             this.scoreDisplay = new System.Windows.Forms.Label();
             this.menuPanel = new System.Windows.Forms.Panel();
             this.stateLabel = new System.Windows.Forms.Label();
-            this.nickName = new System.Windows.Forms.TextBox();
+            this.nickNameField = new System.Windows.Forms.TextBox();
             this.exitBTN = new System.Windows.Forms.Button();
             this.scoreList = new System.Windows.Forms.ListBox();
             this.startBTN = new System.Windows.Forms.Button();
@@ -51,7 +51,7 @@ namespace RocketQuest
             // menuPanel
             // 
             this.menuPanel.Controls.Add(this.stateLabel);
-            this.menuPanel.Controls.Add(this.nickName);
+            this.menuPanel.Controls.Add(this.nickNameField);
             this.menuPanel.Controls.Add(this.exitBTN);
             this.menuPanel.Controls.Add(this.scoreList);
             this.menuPanel.Controls.Add(this.startBTN);
@@ -69,12 +69,12 @@ namespace RocketQuest
             this.stateLabel.TabIndex = 4;
             this.stateLabel.Text = "label1";
             // 
-            // nickName
+            // nickNameField
             // 
-            this.nickName.Location = new System.Drawing.Point(52, 105);
-            this.nickName.Name = "nickName";
-            this.nickName.Size = new System.Drawing.Size(100, 23);
-            this.nickName.TabIndex = 3;
+            this.nickNameField.Location = new System.Drawing.Point(52, 105);
+            this.nickNameField.Name = "nickNameField";
+            this.nickNameField.Size = new System.Drawing.Size(100, 23);
+            this.nickNameField.TabIndex = 3;
             // 
             // exitBTN
             // 
@@ -137,7 +137,7 @@ namespace RocketQuest
 
         private System.Windows.Forms.Label scoreDisplay;
         private System.Windows.Forms.Panel menuPanel;
-        private System.Windows.Forms.TextBox nickName;
+        private System.Windows.Forms.TextBox nickNameField;
         private System.Windows.Forms.Button exitBTN;
         private System.Windows.Forms.ListBox scoreList;
         private System.Windows.Forms.Button startBTN;

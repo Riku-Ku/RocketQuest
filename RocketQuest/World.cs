@@ -10,25 +10,43 @@ namespace RocketQuest
     {
         Random randGenerator = new Random();
 
-        static int playerSpeed = 25, meteorSpeed = -20, meteorCount = 10, complexity = -5, screenWidth = 0, screenHeight = 0;//Кол-во метеоритов
+        static int playerSpeed = 10, meteorSpeed = -20, meteorCount = 10, complexity = -5, screenWidth = 0, screenHeight = 0;//Кол-во метеоритов
 
-        HitBox player = new HitBox(100, 70, 0, 0, 0, 0);//игрок
+        HitBox player = new HitBox(10, 80, 100, 60, 0, 0);//игрок
         HitBox[] meteors = new HitBox[meteorCount];
         
+        public HitBox[] GetMeteors()
+        {
+            return meteors;
+        }
 
-        public void WorldFrame()//положение мира
+        public HitBox GetPlayerData()
+        {
+            return player;
+        }
+
+        public bool WorldFrame()//положение мира
         {
             PlayerMover();
             MeteorMover();
+
+            foreach (HitBox meteorHitBox in meteors)//чек на столкновение
+            {
+                if (ColissionChecker.Colission(player, meteorHitBox))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void MeteorMover()//перемещение метеора
         {
             foreach (HitBox meteorHitBox in meteors)
             {
-                if (ColissionChecker.MeteorOutCheck(meteorHitBox))
+                if (ColissionChecker.MeteorOutCheck(meteorHitBox))//чек на выход за поле
                 {
-                    meteorHitBox.SetLocation(randGenerator.Next(screenWidth) + randGenerator.Next(screenWidth), screenHeight);
+                    meteorHitBox.SetLocation(randGenerator.Next(screenWidth) + screenWidth, screenHeight);
                 }
                 else
                 {
@@ -39,29 +57,48 @@ namespace RocketQuest
 
         private void PlayerMover()//Передвижение игрока
         {
-            if (ColissionChecker.CheckPlayerMoving(player))
+            if (ColissionChecker.CheckPlayerMoving(player, screenWidth, screenHeight))
             {
                 if (MainWindow.isWdown)
                     player.SetSpeed(0, -playerSpeed);
                 else if (MainWindow.isAdown)
                     player.SetSpeed(-playerSpeed, 0);
-                else if(MainWindow.isSdown)
+                else if (MainWindow.isSdown)
                     player.SetSpeed(0, playerSpeed);
                 else if (MainWindow.isDdown)
                     player.SetSpeed(playerSpeed, 0);
             }
+            else
+            {
+                player.SetSpeed(0, 0);
+            }
+
             player.Move();
         }
 
+        public void SetBorders(int screenWidthValue, int screenHeightValue)//значения экрана
+        {
+            if (screenWidthValue > 0 & screenHeightValue > 0)
+            {
+                screenWidth = screenWidthValue;
+                screenHeight = screenHeightValue;
+            }
+            else
+                throw new ArgumentException("Screen Width & Height always > 0");
+        }
+
+
         public void InitializeMeteors()//первичное создание метеоров
         {
-            foreach (HitBox meteorHitBox in meteors)
+            for(int i = 0; i < meteors.Length; i++)
             {
-                meteorHitBox.SetSpeed(meteorSpeed, 0);
+                int meteorTempSize = randGenerator.Next(20, 100);
+                meteors[i] = new HitBox(randGenerator.Next(screenWidth) + screenWidth, randGenerator.Next(screenHeight),
+                    meteorTempSize, meteorTempSize, meteorSpeed, 0);
             }
         }
 
-        private void СomplexityIncreasing()//Увеличение сложности
+        public void СomplexityIncreasing()//Увеличение сложности
         {
             foreach (HitBox meteorHitBox in meteors)
             {
@@ -69,12 +106,17 @@ namespace RocketQuest
             }
         }
 
-        private void СomplexityRest()//Сброс сложности
+        public void СomplexityRest()//Сброс сложности
         {
             foreach (HitBox meteorHitBox in meteors)
             {
                 meteorHitBox.SetSpeed(meteorSpeed, 0);
             }
+        }
+
+        public void WorldRestart()
+        {
+
         }
     }
 }

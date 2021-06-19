@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using System.Windows.Forms;
 
 namespace RocketQuest.Graphics
 {
     class DrawingTools
     {
-        private Bitmap RandomMeteorSkin()
+        public static Bitmap RandomMeteorSkin()
         {
             Random randGenerator = new Random();//ранд генератор
 
@@ -23,5 +24,10 @@ namespace RocketQuest.Graphics
                     return RocketQuest.Properties.Resources.meteorGrey_big2;
             }
         }
+
+        //    public static Bitmap GetScinsForArray(int identif)
+        //    {
+
+        //    }
     }
 }

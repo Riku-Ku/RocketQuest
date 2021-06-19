@@ -7,8 +7,6 @@ namespace RocketQuest.Physics
 {
     class ColissionChecker
     {
-        private static int screenW = 0 , screenH = 0;
-
         public static bool MeteorOutCheck(HitBox spaceObject)//Проверка на выход метеора за поле
         {
             if (((spaceObject.GetX + spaceObject.Width) < 0 ))
@@ -17,27 +15,39 @@ namespace RocketQuest.Physics
             return false;
         }
 
-        public static bool CheckPlayerMoving(HitBox hitBox)//Возможность перемещения
+        public static bool CheckPlayerMoving(HitBox hitBox , int screenWidth, int screenHeight )//Возможность перемещения
         {
-            if ((hitBox.GetX <= screenW - hitBox.Width && hitBox.GetX >= 0) ||
-                (hitBox.GetY <= screenH - hitBox.Height && hitBox.GetY >= 0))
-                return true;
+            //if ((hitBox.GetX < 0 || hitBox.GetX > screenWidth - hitBox.Width) ||
+            //    (hitBox.GetY < 0 || hitBox.GetY > screenHeight - hitBox.Height))
 
-            return false;
-        }
-
-        public void SetBorders(int screenWidth, int screenHeight)//значения экрана
-        {
-            if (screenWidth > 0 & screenHeight > 0)
+            if (hitBox.GetX < 0)
             {
-                screenW = screenWidth;
-                screenH = screenHeight;
+                hitBox.SetLocation(0, hitBox.GetY);
+                return false;
             }
-            else
-                throw new ArgumentException("Screen Width & Height always > 0");
+
+            else if (hitBox.GetY < 0)
+            {
+                hitBox.SetLocation(hitBox.GetX, 0);
+                return false;
+            }
+
+            else if (hitBox.GetX > screenWidth - hitBox.Width)
+            {
+                hitBox.SetLocation(screenWidth, hitBox.GetY);
+                return false;
+            }
+
+            else if (hitBox.GetY > screenHeight - hitBox.Height)
+            {
+                hitBox.SetLocation(hitBox.GetX, screenHeight);
+                return false;
+            }
+
+            return true;
         }
 
-        public static bool Colussion(HitBox meteor, HitBox rocket)//Столкновения
+        public static bool Colission(HitBox meteor, HitBox rocket)//Столкновения
         {
             int rightUpMeteor = meteor.GetX + meteor.Width;
             int rightDownMeteor = rightUpMeteor + meteor.Height;
